@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>My test page</title>
+</head>
+<body>
+<p>This is my page</p>
+
+<form action="{% url 'mutapp:queryname' %}" method="post">
+    Query by name:<br>
+    {% csrf_token %}
+    <label>Virus Strain Name:
+        <input type="text" name="queryname" value="2019-NCOV/USA-AZ1/2020">
+    </label>
+    <br><br>
+    <input type="submit" value="Query">
+</form>
+<br><br>
+
+<form action="{% url 'mutapp:querymutation' %}" method="post">
+    Query by mutation:<br>
+    {% csrf_token %}
+    <label>Star:
+        <input type="text" name="querypos" value="25534">
+    </label>
+    <label>Mutation:
+        <input type="text" name="querymut" value="G/T">
+    </label>
+    <br><br>
+    <input type="submit" value="Query">
+</form>
+<br><br>
+
+{% if latest_sequence_list %}
+    <ul>
+        {% for sequence in latest_sequence_list %}
+            <li><a href="{% url 'mutapp:metadata' sequence.id %}">{{ forloop.counter }}---{{ sequence.virus_strain_name }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+</body>
+</html>
