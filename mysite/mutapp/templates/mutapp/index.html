@@ -5,33 +5,56 @@
     <title>My test page</title>
 </head>
 <body>
-<p>This is my page</p>
+<h3>Mutation inquiry</h3>
 
 <form action="{% url 'mutapp:queryname' %}" method="post">
-    Query by name:<br>
     {% csrf_token %}
-    <label>Virus Strain Name:
-        <input type="text" name="queryname" value="2019-NCOV/USA-AZ1/2020">
-    </label>
-    <br><br>
-    <input type="submit" value="Query">
+    <fieldset>
+        <legend>Query by name:</legend><br>
+        <label>Virus Strain Name:
+            <input type="text" name="queryname" size="35" >
+        </label>
+        <p>Input example:</p>
+        <p>2019-NCOV/USA-AZ1/2020</p>
+        <input type="submit" value="Query">
+    </fieldset>
 </form>
 <br><br>
 
 <form action="{% url 'mutapp:querymutation' %}" method="post">
-    Query by mutation:<br>
     {% csrf_token %}
-    <label>Star:
-        <input type="text" name="querypos" value="25534">
-    </label>
-    <label>Mutation:
-        <input type="text" name="querymut" value="G/T">
-    </label>
-    <br><br>
-    <input type="submit" value="Query">
+    <fieldset>
+        <legend>Query by single-mutation:</legend><br>
+        <label>Start:
+            <input type="text" name="querypos">
+        </label>
+        <label>Mutation:
+            <input type="text" name="querymut" size="30">
+        </label>
+        <p>Input example:</p>
+        <p>Start: 25534</p>
+        <p>Mutation: G/T</p>
+        <input type="submit" value="Query">
+    </fieldset>
 </form>
 <br><br>
 
+<form action="{% url 'mutapp:multimut' %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend>Query by multi-mutation:</legend><br>
+        <label>Start and Mutation:<br><br>
+            <textarea name="multimut" cols="40" rows="10"></textarea>
+        </label>
+        <p>Input example:</p>
+        <p>25534;G/T<br>25534;G/T<br>25534;G/T<br>.....</p>
+        <input type="submit" value="Query">
+    </fieldset>
+</form>
+
+<br><br><br><br>
+<hr>
+<h3>Latest submitted sequence:</h3>
 {% if latest_sequence_list %}
     <ul>
         {% for sequence in latest_sequence_list %}
@@ -41,5 +64,7 @@
 {% else %}
     <p>No polls are available.</p>
 {% endif %}
+<hr><hr>
+<br><br><br>
 </body>
 </html>
