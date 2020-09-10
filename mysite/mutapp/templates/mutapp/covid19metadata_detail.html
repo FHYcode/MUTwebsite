@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>{{ covid19metadata.virus_strain_name }}</h1>
+
+<ul>
+    {% for samplemut in covid19metadata.samplemutlist_set.all %}
+        <li>Mutaion:{{ samplemut.mutation }} </li>
+    {% endfor %}
+    <li>Location:{{ covid19metadata.location }} </li>
+    <li>Host:{{ covid19metadata.host }} </li>
+    <li>Sequence length:{{ covid19metadata.sequence_length }} </li>
+    <li>Collection date:{{ covid19metadata.sample_collection_date }} </li>
+
+</ul>
+
+<a href="{% url 'mutapp:index' %}"> >>Back<< </a>
+
+</body>
+</html>
