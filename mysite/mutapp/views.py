@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
@@ -39,7 +39,21 @@ def query_by_name(request):
     smaple = get_object_or_404(Covid19metadata, virus_strain_name=request.POST['queryname'])
     return HttpResponseRedirect(reverse('mutapp:metadata', args=(smaple.id,)))
 
-
 def query_by_mutation(request):
     mutation_sample = get_object_or_404(MutSamplelist, start=request.POST['querypos'], ref_var=request.POST['querymut'])
     return HttpResponseRedirect(reverse('mutapp:mutation', args=(mutation_sample.id,)))
+
+def query_by_multi_mutation(request):
+    textarea = request.POST['multimut']
+    start_mut = []
+    list_temp = textarea.split()
+    for i in list_temp:
+        start_mut.append(i.split(';'))
+    my_queryset = []
+    for i in start_mut:
+        try:
+            mut_sample = MutSamplelist.objects.get(start=i[0], ref_var=i[1])
+        except (LookupError, MutSamplelist.DoesNotExist):
+            mut_sample = MutSamplelist.objects.get(pk=1)
+        my_queryset.append(mut_sample)
+    return HttpResponse(my_queryset[0].sample)
