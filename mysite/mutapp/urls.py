@@ -9,5 +9,6 @@ urlpatterns = [
     path('mutation/<int:pk>/', views.DetailViewMut.as_view(), name='mutation'),
     path('queryname/', views.query_by_name, name='queryname'),
     path('querymutation/', views.query_by_mutation, name='querymutation'),
+    path('multimut/', views.query_by_multi_mutation, name='multimut'),
 
 ]
