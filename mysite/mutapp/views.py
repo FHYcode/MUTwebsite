@@ -40,20 +40,66 @@ def query_by_name(request):
     return HttpResponseRedirect(reverse('mutapp:metadata', args=(smaple.id,)))
 
 def query_by_mutation(request):
-    mutation_sample = get_object_or_404(MutSamplelist, start=request.POST['querypos'], ref_var=request.POST['querymut'])
+    mutation_sample = get_object_or_404(MutSamplelist,
+                                        start=request.POST['querypos'], ref_var=request.POST['querymut'])
     return HttpResponseRedirect(reverse('mutapp:mutation', args=(mutation_sample.id,)))
 
 def query_by_multi_mutation(request):
+    # get query_set
     textarea = request.POST['multimut']
     start_mut = []
     list_temp = textarea.split()
     for i in list_temp:
-        start_mut.append(i.split(';'))
+        start_mut.append(tuple(i.split(';')))
     my_queryset = []
     for i in start_mut:
         try:
             mut_sample = MutSamplelist.objects.get(start=i[0], ref_var=i[1])
         except (LookupError, MutSamplelist.DoesNotExist):
-            mut_sample = MutSamplelist.objects.get(pk=1)
-        my_queryset.append(mut_sample)
-    return HttpResponse(my_queryset[0].sample)
+            print('LookupError: '+i[0]+';'+i[1])
+        else:
+            my_queryset.append(mut_sample)
+    vname_list = []
+    for i in my_queryset:
+        vname_set = set(i.sample.upper().split(';'))#-----------------------------------
+        vname_list.append(tuple(vname_set))
+
+    # build new table
+    smut_qset_vname = [start_mut, my_queryset, vname_list]
+    smut_qset_vname_transpose = list(map(list, zip(*smut_qset_vname)))
+
+    # count the number of hits
+    vname_all_tuple = ()
+    for i in vname_list:
+        vname_all_tuple = vname_all_tuple + i
+    vname_count_dic = {}
+    for k in vname_all_tuple:
+        vname_count_dic[k] = vname_count_dic.get(k, 0) + 1
+    vname_count_mut_list = []
+    for k,v in vname_count_dic.items():
+        mut_tep = ()
+        for i in smut_qset_vname_transpose:
+            if k in i[2]:
+                mut_tep = mut_tep + i[0]
+        vname_count_mut_list.append([k,v,mut_tep])
+    vname_count_mut_list.sort(key=lambda x:x[1], reverse=True)
+
+    # truncated
+    if len(vname_count_mut_list)>30:
+        vname_count_mut_list_trunc = vname_count_mut_list[0:30]
+    else:
+        vname_count_mut_list_trunc = vname_count_mut_list
+
+    # get id
+    vname_count_mut_list_trunc_id = vname_count_mut_list_trunc
+    i = 0
+    while i<len(vname_count_mut_list_trunc_id):
+        try:
+            metaid = Covid19metadata.objects.get(virus_strain_name=vname_count_mut_list_trunc[0]).id
+        except (LookupError, MutSamplelist.DoesNotExist):
+            print('LookupError: %s', vname_count_mut_list_trunc[0])
+        else:
+            vname_count_mut_list_trunc_id[i].append(metaid)
+
+
+    return HttpResponse(vname_count_mut_list)
