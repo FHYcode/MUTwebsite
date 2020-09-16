@@ -11,7 +11,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published questions."""
-        return Covid19metadata.objects.order_by('sample_collection_date')[:50]
+        return Covid19metadata.objects.order_by('-sample_collection_date')[:10]
 
 class DetailViewMeta(generic.DetailView):
     model = Covid19metadata
@@ -45,7 +45,7 @@ def query_by_mutation(request):
     return HttpResponseRedirect(reverse('mutapp:mutation', args=(mutation_sample.id,)))
 
 def query_by_multi_mutation(request):
-    # get query_set
+    #- get query_set
     textarea = request.POST['multimut']
     start_mut = []
     list_temp = textarea.split()
@@ -64,11 +64,11 @@ def query_by_multi_mutation(request):
         vname_set = set(i.sample.upper().split(';'))#-----------------------------------
         vname_list.append(tuple(vname_set))
 
-    # build new table
+    #- build new table
     smut_qset_vname = [start_mut, my_queryset, vname_list]
     smut_qset_vname_transpose = list(map(list, zip(*smut_qset_vname)))
 
-    # count the number of hits
+    #- count the number of hits
     vname_all_tuple = ()
     for i in vname_list:
         vname_all_tuple = vname_all_tuple + i
@@ -84,22 +84,26 @@ def query_by_multi_mutation(request):
         vname_count_mut_list.append([k,v,mut_tep])
     vname_count_mut_list.sort(key=lambda x:x[1], reverse=True)
 
-    # truncated
-    if len(vname_count_mut_list)>30:
-        vname_count_mut_list_trunc = vname_count_mut_list[0:30]
+    #- truncated
+    truncated = 30
+    if len(vname_count_mut_list)>truncated:
+        vname_count_mut_list_trunc = vname_count_mut_list[0:truncated]
     else:
         vname_count_mut_list_trunc = vname_count_mut_list
 
-    # get id
-    vname_count_mut_list_trunc_id = vname_count_mut_list_trunc
+    #- get object
+    vname_count_mut_list_trunc_obj = vname_count_mut_list_trunc
     i = 0
-    while i<len(vname_count_mut_list_trunc_id):
+    while i<len(vname_count_mut_list_trunc_obj):
         try:
-            metaid = Covid19metadata.objects.get(virus_strain_name=vname_count_mut_list_trunc[0]).id
-        except (LookupError, MutSamplelist.DoesNotExist):
-            print('LookupError: %s', vname_count_mut_list_trunc[0])
+            metaobj = Covid19metadata.objects.get(virus_strain_name=vname_count_mut_list_trunc[i][0])
+        except (LookupError, Covid19metadata.DoesNotExist):
+            print('LookupError:',vname_count_mut_list_trunc[i])
+            vname_count_mut_list_trunc_obj[i].append(Covid19metadata.objects.get(pk=1))
         else:
-            vname_count_mut_list_trunc_id[i].append(metaid)
+            vname_count_mut_list_trunc_obj[i].append(metaobj)
+        i = i + 1
 
-
-    return HttpResponse(vname_count_mut_list)
+    #return HttpResponse(vname_count_mut_list_trunc_obj)
+    context = {'hits_list': vname_count_mut_list_trunc_obj}
+    return render(request, 'mutapp/multimut_hits.html', context)
