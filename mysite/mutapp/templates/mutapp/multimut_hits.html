@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>Mutation hit sequence:</h3>
+<table width="1200" frame="box">
+    <td>Virus strain name</td>
+    <td align="center">Number of hits</td>
+    <td>Hits(Start/Ref_var)</td>
+    <td>Location</td>
+    {% if hits_list %}
+        {% for hit_one in hits_list %}
+            <tr>
+                <td><a href="{% url 'mutapp:metadata' hit_one.3.id %}">{{ forloop.counter }}---{{ hit_one.3.virus_strain_name }}</a></td>
+                <td align="center">{{ hit_one.1 }}</td>
+                <td>{{ hit_one.2 }}</td>
+                <td>{{ hit_one.3.location }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>No polls are available.</p>
+    {% endif %}
+<br><br>
+<hr>
+<br>
+<h3>Geographical distribution:</h3>
+</body>
+</html>
