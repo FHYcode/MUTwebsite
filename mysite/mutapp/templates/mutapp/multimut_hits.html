@@ -6,10 +6,10 @@
 </head>
 <body>
 <h3>Mutation hit sequence:</h3>
-<table width="1200" frame="box">
+<table width="1400" frame="box">
     <td>Virus strain name</td>
-    <td align="center">Number of hits</td>
-    <td>Hits(Start/Ref_var)</td>
+    <td>Number of hits</td>
+    <td align="center">Hits(Start/Ref_var)</td>
     <td>Location</td>
     {% if hits_list %}
         {% for hit_one in hits_list %}
@@ -28,5 +28,10 @@
 <hr>
 <br>
 <h3>Geographical distribution:</h3>
+<ol>
+    {% for one_country in country_count %}
+        <li>{{ one_country.0 }}:{{ one_country.1 }}</li>
+    {% endfor %}
+</ol>
 </body>
 </html>
