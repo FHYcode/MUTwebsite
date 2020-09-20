@@ -38,6 +38,7 @@ class MutSamplelist(models.Model):
     ns_s = models.CharField(max_length=255, blank=True)
     count = models.IntegerField(blank=True)
     sample = models.TextField(blank=True)
+    meta_id = models.TextField(blank=True)
 
     def __str__(self):
         return '-#' + str(self.id) + '--' + self.ref_var + '  at: ' + str(self.start)
