@@ -11,7 +11,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published questions."""
-        return Covid19metadata.objects.order_by('-sample_collection_date')[:10]
+        return Covid19metadata.objects.order_by('-sample_collection_date')[:30]
 
 class DetailViewMeta(generic.DetailView):
     model = Covid19metadata
