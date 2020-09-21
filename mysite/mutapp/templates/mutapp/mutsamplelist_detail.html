@@ -5,19 +5,38 @@
     <title>Title</title>
 </head>
 <body>
-<h1>All samples</h1>
-
-<ul>{{ mutsamplelist.gene }}--{{ mutsamplelist.ns_s }}--{{ mutsamplelist.ti_tv }}</ul>
+<h3>Hit samples:</h3>
+<br>
+<table width="600" frame="box">
+    <tr>
+    <th>Ti_Tv</th>
+    <th>Start</th>
+    <th>Ref_var</th>
+    <th>Gene</th>
+    <th>NS_S</th>
+    <th>Count</th>
+    </tr>
+    <tr>
+        <td align="center">{{ mutsamplelist.ti_tv }}</td>
+        <td align="center">{{ mutsamplelist.start }}</td>
+        <td align="center">{{ mutsamplelist.ref_var }}</td>
+        <td align="center">{{ mutsamplelist.gene }}</td>
+        <td align="center">{{ mutsamplelist.ns_s }}</td>
+        <td align="center">{{ mutsamplelist.count }}</td>
+    </tr>
+</table>
+<br><br><hr>
 {% if meta_list%}
-    <ul>
+    <ol>
         {% for mete_data in meta_list %}
-            <li><a href="{% url 'mutapp:metadata' mete_data.meta_id %}">{{ forloop.counter }}---{{ mete_data.meta_name }}</a></li>
+            <li><a href="{% url 'mutapp:metadata' mete_data.meta_id %}">{{ mete_data.meta_name }}</a></li>
         {% endfor %}
-    </ul>
+    </ol>
 {% else %}
     <p>No polls are available.</p>
 {% endif %}
 
+<hr><br><br>
 <a href="{% url 'mutapp:index' %}"> >>Back<< </a>
 
 </body>
