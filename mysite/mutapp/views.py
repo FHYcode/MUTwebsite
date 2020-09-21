@@ -180,12 +180,22 @@ def query_by_multi_mutation(request):
         metaid_count_mut_list.append([k,v,mut_tep])
     metaid_count_mut_list.sort(key=lambda x:x[1], reverse=True)
 
-    #- truncated
-    truncated = 5000
-    if len(metaid_count_mut_list)>truncated:
-        metaid_count_mut_list_trunc = metaid_count_mut_list[0:truncated]
-    else:
-        metaid_count_mut_list_trunc = metaid_count_mut_list
+    # #- truncated
+    # truncated = 5000
+    # if len(metaid_count_mut_list)>truncated:
+    #     metaid_count_mut_list_trunc = metaid_count_mut_list[0:truncated]
+    # else:
+    #     metaid_count_mut_list_trunc = metaid_count_mut_list
+
+    #- truncated v2
+    if metaid_count_mut_list[0][0] == '1':
+        del metaid_count_mut_list[0]
+    metaid_count_mut_list_trunc = []
+    for i in metaid_count_mut_list:
+        if i[1] == metaid_count_mut_list[0][1]:
+            metaid_count_mut_list_trunc.append(i)
+        else:
+            break
 
     #- get object
     metaid_count_mut_list_trunc_obj = metaid_count_mut_list_trunc
@@ -202,6 +212,10 @@ def query_by_multi_mutation(request):
             metaid_count_mut_list_trunc_obj[i].append(metaobj)
         i = i + 1
 
+    # - sort by date
+    metaid_count_mut_list_trunc_obj.sort(key=lambda x:x[3].sample_collection_date,reverse=True)
+
+    #- geographic distibution
     country_list = [i.split('/')[0].strip() for i in location_list]
     country_count_dic = {}
     for k in country_list:
