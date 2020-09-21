@@ -24,14 +24,15 @@
     {% else %}
         <p>No polls are available.</p>
     {% endif %}
-<br><br>
-<hr>
-<br>
+<br><br><hr><br>
 <h3>Geographical distribution:</h3>
 <ol>
     {% for one_country in country_count %}
         <li>{{ one_country.0 }}:{{ one_country.1 }}</li>
     {% endfor %}
 </ol>
+<br><<br>
+<a href="{% url 'mutapp:index' %}" >>Back<< </a>
+<br><br><hr><br>
 </body>
 </html>
