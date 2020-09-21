@@ -19,7 +19,7 @@ class Covid19metadata(models.Model):
     last_update_time = models.DateTimeField(blank=True)
 
     def __str__(self):
-        return '-#' + str(self.id) + '---' + self.virus_strain_name + ':   ' + self.location
+        return '#--' + str(self.id) + '---|---' + self.virus_strain_name + '---|---' + self.location
 
 class SampleMutlist(models.Model):
     virus_strain_name = models.CharField(max_length=255)
@@ -27,7 +27,7 @@ class SampleMutlist(models.Model):
     metadata = models.ForeignKey(Covid19metadata, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '-#' + str(self.id) + '---' + self.virus_strain_name
+        return '#--' + str(self.id) + '---|---' + self.virus_strain_name
 
 class MutSamplelist(models.Model):
     ti_tv = models.CharField(max_length=255, blank=True)
@@ -41,6 +41,6 @@ class MutSamplelist(models.Model):
     meta_id = models.TextField(blank=True)
 
     def __str__(self):
-        return '-#' + str(self.id) + '--' + self.ref_var + '  at: ' + str(self.start)
+        return '#--' + str(self.id) + '--|--' + str(self.start) + ':' + self.ref_var + '--|--' + str(self.count)
 
 
